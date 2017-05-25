@@ -19,18 +19,18 @@ library
                        Data.Observation
   ghc-options:         -Wall
   build-depends:       attoparsec
-                     , base
-                     , comonad
-                     , containers
-                     , deepseq
-                     , lens
-                     , QuickCheck
-                     , strict
-                     , text
-                     , time
-                     , transformers
-                     , vector
-                     , vector-builder
+                     , base == 4.9.1.0
+                     , comonad == 5.0.1
+                     , containers == 0.5.7.1
+                     , deepseq == 1.4.2.0
+                     , lens == 4.15.2
+                     , QuickCheck == 2.9.2
+                     , strict == 0.3.2
+                     , text == 1.2.2.1
+                     , time == 1.6.0.1
+                     , transformers == 0.5.2.0
+                     , vector == 0.12.0.1
+                     , vector-builder == 0.3.1
   default-language:    Haskell2010
 
 executable weather-exe
@@ -38,17 +38,17 @@ executable weather-exe
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N -O3
   build-depends:       weather
-                     , base
-                     , attoparsec
-                     , comonad
-                     , containers
-                     , lens
-                     , machines
-                     , QuickCheck
-                     , text
-                     , transformers
-                     , time
-                     , vector
+                     , base == 4.9.1.0
+                     , attoparsec == 0.13.1.0
+                     , comonad == 5.0.1
+                     , containers == 0.5.7.1
+                     , lens == 4.15.2
+                     , machines == 0.6.2
+                     , QuickCheck == 2.9.2
+                     , text == 1.2.2.1
+                     , transformers == 0.5.2.0
+                     , time == 1.6.0.1
+                     , vector == 0.12.0.1
   default-language:    Haskell2010
 
 test-suite test
@@ -57,21 +57,21 @@ test-suite test
   other-modules:       Data.Foldl
                        Data.Observation
   main-is:             Test.hs
-  build-depends:       attoparsec
-                     , base
-                     , comonad
-                     , containers
-                     , deepseq
-                     , lens
-                     , QuickCheck
-                     , strict
-                     , tasty
-                     , tasty-quickcheck
-                     , text
-                     , time
-                     , transformers
-                     , vector
-                     , vector-builder
+  build-depends:       attoparsec == 0.13.1.0
+                     , base == 4.9.1.0
+                     , comonad == 5.0.1
+                     , containers == 0.5.7.1
+                     , deepseq == 1.4.2.0
+                     , lens == 4.15.2
+                     , QuickCheck == 2.9.2
+                     , strict == 0.3.2
+                     , tasty == 0.11.2.1
+                     , tasty-quickcheck == 0.8.4
+                     , text == 1.2.2.1
+                     , time == 1.6.0.1
+                     , transformers == 0.5.2.0
+                     , vector == 0.12.0.1
+                     , vector-builder == 0.3.1
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 

@@ -24,6 +24,7 @@ import qualified Data.Vector               as V
 import           System.Environment        (getArgs, getProgName)
 import qualified System.IO                 as IO
 import qualified Test.QuickCheck           as QC
+import           Text.Printf               (printf)
 
 import           Data.Foldl                (Foldl)
 import qualified Data.Foldl                as F
@@ -78,12 +79,11 @@ processData path =
   IO.withFile path IO.ReadMode $ \h ->
     Mach.runT_
       $ parsing h 10000
-      ~> Mach.autoM (\x -> x <$ print (length x))
       ~> increasing (view Obs.obsTime)
-      ~> Mach.autoM (\x -> x <$ print (length $ snd x))
+      ~> progressing
       ~> Mach.mapping snd
       ~> folding (F.foldable (temps <*> countObs <*> traveled))
-      ~> Mach.autoM print
+      ~> Mach.autoM displayMeasures
   where
     temps = lmap (view Obs.obsTemp) (Measures <$> minTemp <*> maxTemp <*> meanTemp)
 
@@ -101,6 +101,23 @@ parsing h sz =
             i' <- liftIO (T.hGetChunk h)
             unless (T.null i') $ go (Atto.parse (Obs.parseObservations sz) i')
           else go (Atto.parse (Obs.parseObservations sz) i)
+
+displayMeasures :: Measures -> IO ()
+displayMeasures (Measures minT maxT meanT counts dist) = do
+  let showTemp :: Maybe Obs.Temp -> String
+      showTemp = maybe "N/A" (view (Obs.celsius . to (printf "%8.2f celsius")))
+  printf "min-temp:  %s\n" (showTemp (minT ^? F._Min))
+  printf "max-temp:  %s\n" (showTemp (maxT ^? F._Max))
+  printf "mean-temp: %s\n" (showTemp meanT)
+  printf "traveled: %dkm\n" (dist ^. Obs.kilometers)
+  iforM_ counts $ \station (Sum n) ->
+    printf "count[%s]: %d\n" (station ^. Obs._Station) n
+
+progressing :: Mach.ProcessT IO a a
+progressing = Mach.repeatedly $ do
+  x <- Mach.await <|> (liftIO (putStr "\n") *> Mach.stop)
+  liftIO (putStr "." *> IO.hFlush IO.stdout)
+  Mach.yield x
 
 increasing :: (Ord b, Monad m) => (a -> b) -> Mach.ProcessT m (V.Vector a) (V.Vector a, V.Vector a)
 increasing key = Mach.fitM (`evalStateT` Nothing) (Mach.autoM f)
